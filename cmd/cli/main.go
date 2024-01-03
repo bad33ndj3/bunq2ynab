@@ -10,6 +10,7 @@ import (
 	"gopkg.in/yaml.v3"
 	"log"
 	"os"
+	"time"
 )
 
 func main() {
@@ -25,16 +26,14 @@ func main() {
 		log.Fatalf("error: %v", err)
 	}
 
-	log.Println(cfg)
-
-	bq, err := bunq.NewClient(ctx, "key")
+	bq, err := bunq.NewClient(ctx, cfg.BunqToken)
 	if err != nil {
 		log.Fatalf("error: %v", err)
 	}
 
-	yn := iynab.NewClient(ynab.NewClient("key"))
+	yn := iynab.NewClient(ynab.NewClient(cfg.YnabToken))
 
-	err = cli.NewClient(bq, yn, cfg).Sync()
+	err = cli.NewClient(bq, yn, cfg).Sync(time.Date(2024, 1, 3, 18, 0, 0, 0, time.UTC))
 	if err != nil {
 		log.Fatalf("error: %v", err)
 	}

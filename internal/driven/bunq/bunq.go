@@ -3,6 +3,7 @@ package bunq
 
 import (
 	"bunqtoynab/core/domain"
+	"fmt"
 	"time"
 
 	"github.com/pkg/errors"
@@ -83,7 +84,7 @@ func (c *Client) GetAccountByName(name string) (*domain.Account, error) {
 		}
 	}
 
-	return nil, errors.New("account not found")
+	return nil, fmt.Errorf("account not found '%s'", name)
 }
 
 func (c *Client) getAllAccounts() ([]*domain.Account, error) {
