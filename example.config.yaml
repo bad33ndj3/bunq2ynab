@@ -1,0 +1,9 @@
+bunq_token: "secret"
+ynab_token: "secret"
+accounts:
+  - bunq_account_name: "Your bunq account name"
+    ynab_budget_name: "Your YNAB budget name"
+    ynab_account_name: "Your YNAB account name"
+  - bunq_account_name: "Your bunq account name 2"
+    ynab_budget_name: "Your YNAB budget name 2"
+    ynab_account_name: "Your YNAB account name 2"
