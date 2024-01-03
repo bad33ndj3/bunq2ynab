@@ -1,7 +1,7 @@
 package ynab
 
 import (
-	"bunqtoynab/core/domain"
+	"github.com/bad33ndj3/bunq2ynab/core/domain"
 	"github.com/brunomvsouza/ynab.go"
 	"github.com/brunomvsouza/ynab.go/api"
 	"github.com/brunomvsouza/ynab.go/api/account"

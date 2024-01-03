@@ -1,11 +1,11 @@
 package main
 
 import (
-	"bunqtoynab/core/domain"
-	"bunqtoynab/internal/driven/bunq"
-	iynab "bunqtoynab/internal/driven/ynab"
-	"bunqtoynab/internal/driver/cli"
 	"context"
+	"github.com/bad33ndj3/bunq2ynab/core/domain"
+	"github.com/bad33ndj3/bunq2ynab/internal/driven/bunq"
+	iynab "github.com/bad33ndj3/bunq2ynab/internal/driven/ynab"
+	"github.com/bad33ndj3/bunq2ynab/internal/driver/cli"
 	"github.com/brunomvsouza/ynab.go"
 	"gopkg.in/yaml.v3"
 	"log"

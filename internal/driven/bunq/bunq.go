@@ -2,8 +2,8 @@
 package bunq
 
 import (
-	"bunqtoynab/core/domain"
 	"fmt"
+	"github.com/bad33ndj3/bunq2ynab/core/domain"
 	"time"
 
 	"github.com/pkg/errors"

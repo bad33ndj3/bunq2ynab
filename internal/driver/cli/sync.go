@@ -1,9 +1,9 @@
 package cli
 
 import (
-	"bunqtoynab/core/domain"
-	"bunqtoynab/internal/driven/bunq"
-	"bunqtoynab/internal/driven/ynab"
+	"github.com/bad33ndj3/bunq2ynab/core/domain"
+	"github.com/bad33ndj3/bunq2ynab/internal/driven/bunq"
+	"github.com/bad33ndj3/bunq2ynab/internal/driven/ynab"
 	"github.com/pkg/errors"
 	"log/slog"
 	"time"

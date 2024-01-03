@@ -1,4 +1,4 @@
-module bunqtoynab
+module github.com/bad33ndj3/bunq2ynab
 
 go 1.21
 
@@ -8,7 +8,7 @@ require (
 	github.com/pkg/errors v0.8.1
 	github.com/shopspring/decimal v1.3.1
 	go.uber.org/ratelimit v0.3.0
-	gopkg.in/yaml.v3 v3.0.0-20200313102051-9f266ea9e77c
+	gopkg.in/yaml.v3 v3.0.1
 )
 
 require (
