@@ -1,5 +1,4 @@
-# YNAB to BUNQ
-
+# BUNQ to YNAB 
 <img src='https://github.com/bad33ndj3/bunq2ynab/assets/9072952/2a61635f-db5e-43a2-825a-8a230cd3bebc' width='225'>
 
 
