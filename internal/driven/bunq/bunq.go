@@ -2,29 +2,26 @@
 package bunq
 
 import (
-	"fmt"
-	"github.com/bad33ndj3/bunq2ynab/core/domain"
+	"context"
 	"time"
 
+	"github.com/bad33ndj3/bunq2ynab/internal/core/entity"
 	"github.com/pkg/errors"
 	"github.com/shopspring/decimal"
 )
 
-// GetAccountWithTransactions returns all payments for the given account.
-func (c *Client) GetAccountWithTransactions(
-	name string,
-) (*domain.Account, error) {
-	acc, err := c.GetAccountByName(name)
-	if err != nil {
-		return nil, errors.Wrap(err, "getting account by name")
-	}
-
+// GetTransactions returns all payments for the given account.
+func (c *Client) GetTransactions(
+	_ context.Context,
+	bankID int,
+) ([]*entity.Transaction, error) {
 	c.rt.Take()
-
-	allPaymentResponse, err := c.client.PaymentService.GetAllPayment(uint(acc.BankID))
+	allPaymentResponse, err := c.client.PaymentService.GetAllPayment(uint(bankID))
 	if err != nil {
 		return nil, errors.Wrap(err, "getting all payments")
 	}
+
+	var transactions []*entity.Transaction
 
 	for _, r := range allPaymentResponse.Response {
 		payment := r.Payment
@@ -39,58 +36,41 @@ func (c *Client) GetAccountWithTransactions(
 			return nil, errors.Wrap(err, "parsing date")
 		}
 
-		transaction := &domain.Transaction{
+		transaction := &entity.Transaction{
 			BankID:      payment.ID,
 			Description: payment.Description,
 			Amount:      amount,
 			Date:        date,
-			Type:        domain.PaymentTypeFromString(payment.Type),
-			SubType:     domain.PaymentSubTypeFromString(payment.SubType),
+			Type:        entity.PaymentTypeFromString(payment.Type),
+			SubType:     entity.PaymentSubTypeFromString(payment.SubType),
 			Payee:       payment.CounterpartyAlias.DisplayName,
 			PayeeIBAN:   payment.CounterpartyAlias.IBAN,
 		}
 
-		acc.Transactions = append(acc.Transactions, transaction)
+		transactions = append(transactions, transaction)
 	}
 
-	return acc, nil
+	return transactions, nil
 }
 
-func (c *Client) GetAccountByID(accountID int) (*domain.Account, error) {
-	accounts, err := c.getAllAccounts()
-	if err != nil {
-		return nil, errors.Wrap(err, "getting all accounts")
-	}
-
-	for _, account := range accounts {
-		if account.BankID == accountID {
-			return account, nil
-		}
-	}
-
-	return nil, errors.New("account not found")
-}
-
-// GetAccountByName returns the account with the given name.
-func (c *Client) GetAccountByName(name string) (*domain.Account, error) {
-	accounts, err := c.getAllAccounts()
-	if err != nil {
-		return nil, errors.Wrap(err, "getting all accounts")
-	}
-
-	for _, account := range accounts {
-		if account.Description == name {
-			return account, nil
-		}
-	}
-
-	return nil, fmt.Errorf("account not found '%s'", name)
-}
-
-func (c *Client) getAllAccounts() ([]*domain.Account, error) {
-	var accounts []*domain.Account
+func (c *Client) GetAllAccounts() ([]*entity.Account, error) {
 	c.rt.Take()
+	sa, err := c.getAllSavingAccounts()
+	if err != nil {
+		return nil, errors.Wrap(err, "getting all saving accounts")
+	}
 
+	ba, err := c.getAllBankAccounts()
+	if err != nil {
+		return nil, errors.Wrap(err, "getting all bank accounts")
+	}
+
+	return append(sa, ba...), nil
+}
+
+func (c *Client) getAllSavingAccounts() ([]*entity.Account, error) {
+	var accounts []*entity.Account
+	c.rt.Take()
 	savingAccounts, err := c.client.AccountService.GetAllMonetaryAccountSaving()
 	if err != nil {
 		return nil, errors.Wrap(err, "getting all saving accounts")
@@ -98,10 +78,10 @@ func (c *Client) getAllAccounts() ([]*domain.Account, error) {
 
 	for _, r := range savingAccounts.Response {
 		acc := r.MonetaryAccountSaving
-		account := &domain.Account{
+		account := &entity.Account{
 			BankID:      acc.ID,
 			Description: acc.Description,
-			AccountType: domain.AccountTypeSaving,
+			AccountType: entity.AccountTypeSaving,
 		}
 		if len(acc.Alias) > 0 {
 			account.IBAN = acc.Alias[0].Value
@@ -109,23 +89,29 @@ func (c *Client) getAllAccounts() ([]*domain.Account, error) {
 		accounts = append(accounts, account)
 	}
 
+	return accounts, nil
+}
+
+func (c *Client) getAllBankAccounts() ([]*entity.Account, error) {
+	var accounts []*entity.Account
 	c.rt.Take()
-	bankAccounts, err := c.client.AccountService.GetAllMonetaryAccountBank()
+	savingAccounts, err := c.client.AccountService.GetAllMonetaryAccountBank()
 	if err != nil {
 		return nil, errors.Wrap(err, "getting all bank accounts")
 	}
 
-	for _, r := range bankAccounts.Response {
+	for _, r := range savingAccounts.Response {
 		acc := r.MonetaryAccountBank
-		account := &domain.Account{
+		account := &entity.Account{
 			BankID:      acc.ID,
 			Description: acc.Description,
-			AccountType: domain.AccountTypeBank,
+			AccountType: entity.AccountTypeSaving,
 		}
 		if len(acc.Alias) > 0 {
 			account.IBAN = acc.Alias[0].Value
 		}
 		accounts = append(accounts, account)
 	}
+
 	return accounts, nil
 }

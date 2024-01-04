@@ -1,7 +1,7 @@
 package ynab
 
 import (
-	"github.com/bad33ndj3/bunq2ynab/core/domain"
+	"github.com/bad33ndj3/bunq2ynab/internal/core/entity"
 	"github.com/brunomvsouza/ynab.go"
 	"github.com/brunomvsouza/ynab.go/api"
 	"github.com/brunomvsouza/ynab.go/api/account"
@@ -19,7 +19,10 @@ func NewClient(yn ynab.ClientServicer) *Client {
 	return &Client{yn: yn}
 }
 
-func (c *Client) PushTransactions(budgetID, accountID string, transactions []*domain.Transaction) error {
+func (c *Client) PushTransactions(
+	budgetID, accountID string,
+	transactions []*entity.Transaction,
+) error {
 	var ynabTransactions []transaction.PayloadTransaction
 	for _, t := range transactions {
 		ynabTransactions = append(ynabTransactions, domainToYnabTransaction(t, accountID))
@@ -31,12 +34,11 @@ func (c *Client) PushTransactions(budgetID, accountID string, transactions []*do
 	}
 
 	return nil
-
 }
 
 // TransformBunqToYNABPayload transforms a bunq transaction to a YNAB transaction payload.
 func domainToYnabTransaction(
-	t *domain.Transaction,
+	t *entity.Transaction,
 	accountID string,
 ) transaction.PayloadTransaction {
 	importID := importID(t)
@@ -71,13 +73,13 @@ func domainToYnabTransaction(
 // importID generates an importID for a transaction.
 // This is used by YNAB to prevent duplicate imports.
 // If you want to import the same transaction multiple times, you can change the importIteration.
-func importID(t *domain.Transaction) string {
+func importID(t *entity.Transaction) string {
 	const importIteration = "1"
 
 	return "YNAB:" + t.Amount.String() + ":" + t.Date.Format("2006-01-02") + ":" + importIteration
 }
 
-func (c *Client) GetAccountByName(budgetID, name string) (*domain.Budget, error) {
+func (c *Client) GetAccountByName(budgetID, name string) (*entity.Account, error) {
 	sm, err := c.yn.Account().GetAccounts(budgetID, nil)
 	if err != nil {
 		return nil, err
@@ -92,14 +94,14 @@ func (c *Client) GetAccountByName(budgetID, name string) (*domain.Budget, error)
 	return nil, errors.New("account not found")
 }
 
-func accountToDomain(account *account.Account) *domain.Budget {
-	return &domain.Budget{
-		ID:   account.ID,
-		Name: account.Name,
+func accountToDomain(account *account.Account) *entity.Account {
+	return &entity.Account{
+		BudgetID:    account.ID,
+		Description: account.Name,
 	}
 }
 
-func (c *Client) GetBudgetByName(name string) (*domain.Budget, error) {
+func (c *Client) GetBudgetByName(name string) (*entity.Budget, error) {
 	sm, err := c.yn.Budget().GetBudgets()
 	if err != nil {
 		return nil, err
@@ -114,8 +116,8 @@ func (c *Client) GetBudgetByName(name string) (*domain.Budget, error) {
 	return nil, errors.New("budget not found")
 }
 
-func budgetToDomain(b *budget.Summary) *domain.Budget {
-	return &domain.Budget{
+func budgetToDomain(b *budget.Summary) *entity.Budget {
+	return &entity.Budget{
 		ID:   b.ID,
 		Name: b.Name,
 	}

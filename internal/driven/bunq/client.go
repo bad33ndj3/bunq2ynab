@@ -2,10 +2,11 @@ package bunq
 
 import (
 	"context"
+	"time"
+
 	"github.com/OGKevin/go-bunq/bunq"
 	"github.com/pkg/errors"
 	"go.uber.org/ratelimit"
-	"time"
 )
 
 const (

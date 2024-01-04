@@ -1,4 +1,4 @@
-package domain
+package entity
 
 // Budget represents a top level budget, e.g. "My Budget" or "Family Budget".
 type Budget struct {
