@@ -1,6 +1,6 @@
 # YNAB to BUNQ
 
-<img src='https://github.com/bad33ndj3/bunq2ynab/assets/9072952/2a61635f-db5e-43a2-825a-8a230cd3bebc' width='125'>
+<img src='https://github.com/bad33ndj3/bunq2ynab/assets/9072952/2a61635f-db5e-43a2-825a-8a230cd3bebc' width='225'>
 
 
 This script will sync BUNQ transactions to YNAB.
