@@ -15,7 +15,7 @@ type Service interface {
 	// Sync syncs all transactions from bunq to YNAB from the given date.
 	// There is a limit of 200 transactions per request.
 	// It has rate limiting that will wait till the next request can be made.
-	Sync(from time.Time) error
+	Sync(ctx context.Context, from time.Time) error
 }
 
 type Client struct {
