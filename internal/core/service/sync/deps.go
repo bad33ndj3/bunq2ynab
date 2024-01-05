@@ -18,6 +18,7 @@ type Ynab interface {
 	GetBudgetByName(name string) (*entity.Budget, error)
 	GetAccountByName(budgetID string, name string) (*entity.Account, error)
 	PushTransactions(budgetID string, accountID string, transactions []*entity.Transaction) error
+	GetAllCategories(ctx context.Context, budgetID string) ([]*entity.GroupWithCategories, error)
 }
 
 type AccountStorage interface {

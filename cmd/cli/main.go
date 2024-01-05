@@ -4,6 +4,7 @@ import (
 	"context"
 	"log"
 	"os"
+	"strconv"
 	"time"
 
 	"github.com/bad33ndj3/bunq2ynab/internal/core/entity"
@@ -13,6 +14,7 @@ import (
 	iynab "github.com/bad33ndj3/bunq2ynab/internal/driven/ynab"
 	"github.com/bad33ndj3/bunq2ynab/internal/driver/cli"
 	"github.com/brunomvsouza/ynab.go"
+	"github.com/cristalhq/acmd"
 	"github.com/pkg/errors"
 	"gopkg.in/yaml.v3"
 )
@@ -37,10 +39,60 @@ func run() error {
 	if err != nil {
 		return errors.Wrap(err, "setting up sync service")
 	}
+	c := cli.NewClient(sv)
 
-	err = cli.NewClient(sv).Sync(ctx, time.Date(2024, 1, 3, 21, 0, 0, 0, time.UTC))
+	cmds := []acmd.Command{
+		{
+			Name:        "sync",
+			Description: "syncs all transactions from bunq to YNAB, from the given days ago",
+			ExecFunc: func(ctx context.Context, args []string) error {
+				if len(args) != 1 {
+					return errors.New("invalid number of arguments")
+				}
+
+				daysAgo := args[0]
+				days, err := strconv.Atoi(daysAgo)
+				if err != nil {
+					return errors.Wrap(err, "converting days ago to int")
+				}
+
+				now := time.Now()
+
+				err = c.Sync(ctx, now.AddDate(0, 0, -days))
+				if err != nil {
+					return errors.Wrap(err, "syncing")
+				}
+
+				return nil
+			},
+		},
+		{
+			Name:        "categories",
+			Description: "print all categories from YNAB",
+			ExecFunc: func(ctx context.Context, args []string) error {
+				if len(args) != 1 {
+					return errors.New("invalid number of arguments")
+				}
+
+				err := c.GetAllCategories(ctx, args[0])
+				if err != nil {
+					return errors.Wrap(err, "getting all categories")
+				}
+
+				return nil
+			},
+		},
+	}
+
+	// all the acmd.Config fields are optional
+	r := acmd.RunnerOf(cmds, acmd.Config{
+		AppName:        "bunq2ynab",
+		AppDescription: "syncs bunq transactions to YNAB",
+	})
+
+	err = r.Run()
 	if err != nil {
-		return errors.Wrap(err, "syncing")
+		return errors.Wrap(err, "running command")
 	}
 
 	return nil

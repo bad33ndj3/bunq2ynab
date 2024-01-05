@@ -14,6 +14,7 @@ This script is still in development since I just started testing it.
 - [x] Optimize API calls
 - [ ] Fix internal transfers
 - [ ] Add Joint account support
+- [ ] Add support for all goal types
 - [ ] Add more tests
 - [ ] Add more documentation
 - [ ] Add CI/CD
@@ -29,8 +30,27 @@ This script is still in development since I just started testing it.
         - bunq_account_name is the name of the account in bunq
         - ynab_budget_name is the name of the budget in YNAB (Top level)
         - ynab_account_name is the name of the bank account in YNAB
-4. Run `make run`
+4. Run `make sync` (This will sync all transactions from the last 30 days)
 5. Wait for the script to finish
+
+OR
+
+
+`go install github.com/bad33ndj3/bunq2ynab@latest`
+
+```
+Usage:
+
+    bunq2ynab <command> [arguments...]
+
+The commands are:
+
+    categories           print all categories from YNAB
+    help                 shows help message
+    sync                 syncs all transactions from bunq to YNAB, from the given days ago
+    version              shows version of the application
+
+```
 
 ## Similar projects
 - [ynab](https://support.ynab.com/en_us/direct-import-in-the-uk-and-eu-an-overview-Syae1z_A9) Last year YNAB added support for direct import in the UK and EU.  This is a great alternative if your bank is supported.

@@ -4,6 +4,8 @@ github.com/benbjohnson/clock v1.3.0 h1:ip6w0uFQkncKQ979AypyG0ER7mqUSBdKLOgAle/AT
 github.com/benbjohnson/clock v1.3.0/go.mod h1:J11/hYXuz8f4ySSvYwY0FKfm+ezbsZBKZxNJlLklBHA=
 github.com/brunomvsouza/ynab.go v1.4.0 h1:j32NsAq74sxWtfi16cFrn/aj2K8sZpaXPlcJiB9bwRk=
 github.com/brunomvsouza/ynab.go v1.4.0/go.mod h1:u5zDi6NY53RIqel+hzVodPr0CuZ0ZONbf03cex+kods=
+github.com/cristalhq/acmd v0.11.2 h1:ITIWtBRiYbmzk+i8xQgH2RzfCVMII+dOd0CtGWVIhaU=
+github.com/cristalhq/acmd v0.11.2/go.mod h1:LG5oa43pE/BbxtfMoImHCQN++0Su7dzipdgBjMCBVDQ=
 github.com/davecgh/go-spew v1.1.0/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/davecgh/go-spew v1.1.1 h1:vj9j/u1bqnvCEfJOwUhtlOARqs3+rkHYY13jYWTU97c=
 github.com/davecgh/go-spew v1.1.1/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
@@ -35,6 +37,8 @@ golang.org/x/exp v0.0.0-20220303212507-bbda1eaf7a17/go.mod h1:lgLbSvA5ygNOMpwM/9
 gopkg.in/check.v1 v0.0.0-20161208181325-20d25e280405/go.mod h1:Co6ibVJAznAaIkqp8huTwlJQCZ016jof/cbN4VW5Yz0=
 gopkg.in/check.v1 v1.0.0-20180628173108-788fd7840127 h1:qIbj1fsPNlZgppZ+VLlY7N33q108Sa+fhmuc+sWQYwY=
 gopkg.in/check.v1 v1.0.0-20180628173108-788fd7840127/go.mod h1:Co6ibVJAznAaIkqp8huTwlJQCZ016jof/cbN4VW5Yz0=
+gopkg.in/ffmt.v1 v1.5.6 h1:4Bu3riZp5sAIXW2T/18JM9BkwJLodurXFR0f7PXp+cw=
+gopkg.in/ffmt.v1 v1.5.6/go.mod h1:LssvGOZFiBGoBcobkTqnyh+uN1VzIRoibW+c0JI/Ha4=
 gopkg.in/jarcoal/httpmock.v1 v1.0.0-20180615191036-16f9a43967d6 h1:Y8fBSgc6mpy2zJoC3x4l5XAn2x9QJA9+EqmNAYU1Bsw=
 gopkg.in/jarcoal/httpmock.v1 v1.0.0-20180615191036-16f9a43967d6/go.mod h1:d3R+NllX3X5e0zlG1Rful3uLvsGC/Q3OHut5464DEQw=
 gopkg.in/yaml.v3 v3.0.1 h1:fxVm/GzAzEWqLHuvctI91KS9hhNmmWOoWu0XTYJS7CA=

@@ -5,10 +5,12 @@ go 1.21
 require (
 	github.com/OGKevin/go-bunq v0.3.0
 	github.com/brunomvsouza/ynab.go v1.4.0
+	github.com/cristalhq/acmd v0.11.2
 	github.com/pkg/errors v0.8.1
 	github.com/samber/lo v1.39.0
 	github.com/shopspring/decimal v1.3.1
 	go.uber.org/ratelimit v0.3.0
+	gopkg.in/ffmt.v1 v1.5.6
 	gopkg.in/yaml.v3 v3.0.1
 )
 

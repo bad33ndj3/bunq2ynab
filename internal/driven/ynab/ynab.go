@@ -1,11 +1,14 @@
 package ynab
 
 import (
+	"context"
+
 	"github.com/bad33ndj3/bunq2ynab/internal/core/entity"
 	"github.com/brunomvsouza/ynab.go"
 	"github.com/brunomvsouza/ynab.go/api"
 	"github.com/brunomvsouza/ynab.go/api/account"
 	"github.com/brunomvsouza/ynab.go/api/budget"
+	"github.com/brunomvsouza/ynab.go/api/category"
 	"github.com/brunomvsouza/ynab.go/api/transaction"
 	"github.com/pkg/errors"
 	"github.com/shopspring/decimal"
@@ -114,6 +117,89 @@ func (c *Client) GetBudgetByName(name string) (*entity.Budget, error) {
 	}
 
 	return nil, errors.New("budget not found")
+}
+
+func (c *Client) GetAllCategories(
+	_ context.Context,
+	budgetID string,
+) ([]*entity.GroupWithCategories, error) {
+	sm, err := c.yn.Category().GetCategories(budgetID, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	var categories []*entity.GroupWithCategories
+	for i := range sm.GroupWithCategories {
+		if sm.GroupWithCategories[i].Hidden || sm.GroupWithCategories[i].Deleted {
+			continue
+		}
+		categories = append(categories, groupCategoryToDomain(sm.GroupWithCategories[i]))
+	}
+
+	return categories, nil
+}
+
+func groupCategoryToDomain(i *category.GroupWithCategories) *entity.GroupWithCategories {
+	return &entity.GroupWithCategories{
+		ID:         i.ID,
+		Name:       i.Name,
+		Hidden:     i.Hidden,
+		Categories: categoriesToDomain(i.Categories),
+	}
+}
+
+func categoriesToDomain(categories []*category.Category) []*entity.Category {
+	var cs []*entity.Category
+	for i := range categories {
+		if categories[i].Deleted || categories[i].Hidden {
+			continue
+		}
+		cs = append(cs, categoryToDomain(categories[i]))
+	}
+
+	return cs
+}
+
+func categoryToDomain(c *category.Category) *entity.Category {
+	cc := &entity.Category{
+		ID:       c.ID,
+		Name:     c.Name,
+		Budgeted: decimal.NewFromInt(c.Budgeted).Div(decimal.NewFromInt(1000)),
+		Activity: decimal.NewFromInt(c.Activity).Div(decimal.NewFromInt(1000)),
+		Balance:  decimal.NewFromInt(c.Balance).Div(decimal.NewFromInt(1000)),
+		GoalType: goalToDomain(c.GoalType),
+	}
+
+	if c.GoalTargetMonth != nil {
+		cc.GoalDate = c.GoalTargetMonth.Time
+	}
+
+	if c.GoalTarget != nil {
+		goal := decimal.NewFromInt(*c.GoalTarget).Div(decimal.NewFromInt(1000))
+		cc.GoalTarget = &goal
+	}
+
+	return cc
+}
+
+func goalToDomain(goalType *category.Goal) *entity.Goal {
+	if goalType == nil {
+		return nil
+	}
+
+	var goal entity.Goal
+	switch *goalType {
+	case category.GoalTargetCategoryBalance:
+		goal = entity.GoalTargetCategoryBalance
+	case category.GoalTargetCategoryBalanceByDate:
+		goal = entity.GoalTargetCategoryBalanceByDate
+	case category.GoalMonthlyFunding:
+		goal = entity.GoalMonthlyFunding
+	default:
+		return nil
+	}
+
+	return &goal
 }
 
 func budgetToDomain(b *budget.Summary) *entity.Budget {

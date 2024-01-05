@@ -5,10 +5,9 @@ import (
 	"fmt"
 	"time"
 
-	"log/slog"
-
 	"github.com/bad33ndj3/bunq2ynab/internal/core/entity"
 	"github.com/pkg/errors"
+	"log/slog"
 )
 
 type Service interface {
@@ -32,6 +31,23 @@ func NewClient(bu Bunq, bus AccountStorage, yn Ynab, cfg *entity.Config) *Client
 		yn:  yn,
 		cfg: cfg,
 	}
+}
+
+func (c *Client) GetAllCategories(
+	ctx context.Context,
+	budgetName string,
+) ([]*entity.GroupWithCategories, error) {
+	budget, err := c.yn.GetBudgetByName(budgetName)
+	if err != nil {
+		return nil, errors.Wrap(err, "getting budget by name")
+	}
+
+	categories, err := c.yn.GetAllCategories(ctx, budget.ID)
+	if err != nil {
+		return nil, errors.Wrap(err, "getting all categories")
+	}
+
+	return categories, nil
 }
 
 // Sync syncs all transactions from bunq to YNAB.
