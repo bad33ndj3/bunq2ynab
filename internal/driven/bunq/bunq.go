@@ -65,7 +65,12 @@ func (c *Client) GetAllAccounts() ([]*entity.Account, error) {
 		return nil, errors.Wrap(err, "getting all bank accounts")
 	}
 
-	return append(sa, ba...), nil
+	jas, err := c.getAllJointAccounts()
+	if err != nil {
+		return nil, errors.Wrap(err, "getting all joint accounts")
+	}
+
+	return append(append(sa, ba...), jas...), nil
 }
 
 func (c *Client) getAllSavingAccounts() ([]*entity.Account, error) {
@@ -105,7 +110,31 @@ func (c *Client) getAllBankAccounts() ([]*entity.Account, error) {
 		account := &entity.Account{
 			BankID:      acc.ID,
 			Description: acc.Description,
-			AccountType: entity.AccountTypeSaving,
+			AccountType: entity.AccountTypeBank,
+		}
+		if len(acc.Alias) > 0 {
+			account.IBAN = acc.Alias[0].Value
+		}
+		accounts = append(accounts, account)
+	}
+
+	return accounts, nil
+}
+
+func (c *Client) getAllJointAccounts() ([]*entity.Account, error) {
+	var accounts []*entity.Account
+	c.rt.Take()
+	jointAccounts, err := c.client.AccountService.GetAllMonetaryAccountJoint()
+	if err != nil {
+		return nil, errors.Wrap(err, "getting all joint accounts")
+	}
+
+	for _, r := range jointAccounts.Response {
+		acc := r.MonetaryAccountJoint
+		account := &entity.Account{
+			BankID:      acc.ID,
+			Description: acc.Description,
+			AccountType: entity.AccountTypeJoint,
 		}
 		if len(acc.Alias) > 0 {
 			account.IBAN = acc.Alias[0].Value

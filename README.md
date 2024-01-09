@@ -12,8 +12,8 @@ This script is still in development since I just started testing it.
 
 - [x] Add support for multiple budgets
 - [x] Optimize API calls
+- [x] Add Joint account support
 - [ ] Fix internal transfers
-- [ ] Add Joint account support
 - [ ] Add support for all goal types
 - [ ] Add more tests
 - [ ] Add more documentation

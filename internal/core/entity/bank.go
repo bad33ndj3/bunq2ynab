@@ -126,6 +126,8 @@ const (
 	AccountTypeBank AccountType = "BANK"
 	// AccountTypeSaving represents a savings account.
 	AccountTypeSaving AccountType = "SAVING"
+	// AccountTypeJoint represents a joint account.
+	AccountTypeJoint AccountType = "JOINT"
 )
 
 // AccountStatus represents the status of an account.

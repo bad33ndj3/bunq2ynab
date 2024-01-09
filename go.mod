@@ -19,3 +19,5 @@ require (
 	github.com/satori/go.uuid v1.2.0 // indirect
 	golang.org/x/exp v0.0.0-20220303212507-bbda1eaf7a17 // indirect
 )
+
+replace github.com/OGKevin/go-bunq => github.com/bad33ndj3/go-bunq v0.3.1
