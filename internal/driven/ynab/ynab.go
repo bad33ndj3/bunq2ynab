@@ -107,7 +107,7 @@ func accountToDomain(account *account.Account) *entity.Account {
 func (c *Client) GetBudgetByName(name string) (*entity.Budget, error) {
 	sm, err := c.yn.Budget().GetBudgets()
 	if err != nil {
-		return nil, err
+		return nil, errors.Wrap(err, "getting budgets")
 	}
 
 	for i := range sm {
@@ -116,7 +116,7 @@ func (c *Client) GetBudgetByName(name string) (*entity.Budget, error) {
 		}
 	}
 
-	return nil, errors.New("budget not found")
+	return nil, errors.Wrapf(errors.New("budget not found"), "budget name: %s", name)
 }
 
 func (c *Client) GetAllCategories(

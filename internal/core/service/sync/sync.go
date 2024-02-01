@@ -3,11 +3,11 @@ package sync
 import (
 	"context"
 	"fmt"
+	"log/slog"
 	"time"
 
 	"github.com/bad33ndj3/bunq2ynab/internal/core/entity"
 	"github.com/pkg/errors"
-	"log/slog"
 )
 
 type Service interface {
@@ -69,6 +69,17 @@ func (c *Client) Sync(ctx context.Context, from time.Time) error {
 		}
 		slog.Info("----------------------------------------")
 		slog.Info("Syncing account", slog.String("account", account.BunqAccountName))
+
+		if account.From != nil {
+			limitFrom, err := time.Parse(time.DateOnly, *account.From)
+			if err != nil {
+				return errors.Wrap(err, "parsing from date")
+			}
+
+			if limitFrom.After(from) {
+				from = limitFrom
+			}
+		}
 
 		var transactions []*entity.Transaction
 		for _, transaction := range ba.Transactions {
