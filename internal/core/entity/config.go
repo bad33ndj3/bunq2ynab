@@ -10,7 +10,8 @@ type Config struct {
 // ConfigAccount is the configuration for a single account.
 // This is what will get synced.
 type ConfigAccount struct {
-	BunqAccountName string `yaml:"bunq_account_name"`
-	YnabBudgetName  string `yaml:"ynab_budget_name"`
-	YnabAccountName string `yaml:"ynab_account_name"`
+	BunqAccountName string  `yaml:"bunq_account_name"`
+	YnabBudgetName  string  `yaml:"ynab_budget_name"`
+	YnabAccountName string  `yaml:"ynab_account_name"`
+	From            *string `yaml:"from"`
 }
